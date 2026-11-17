@@ -1,23 +1,13 @@
 /**
  * Jugador.js
  * Representa al participante humano o al agente (autómata).
- *
- * Reglas de diseño (según la propuesta de arquitectura):
- *  - Una sola clase para ambos tipos; `tipo` solo cambia cómo se elige el objetivo.
- *  - Solo conoce su tablero propio y su mapa de probabilidades propio.
- *    NUNCA recibe el tablero del oponente.
- *  - Solo acumula conocimiento parcial: lo que los disparos le han revelado.
- *
  * Formato de celda:      { fila, columna }
  * Formato de resultado (lo que devuelve Tablero.recibirDisparo):
  *                        { impacto: boolean, idBarco: string|null, hundido: boolean }
  * (Si decides otro formato, solo hay que ajustar registrarResultado.)
  */
 
-export const TIPO_JUGADOR = Object.freeze({
-  HUMANO: "HUMANO",
-  AUTOMATA: "AUTOMATA",
-});
+import { TIPO_JUGADOR, RESULTADO_CELDA } from "../constantes/constantes.js";
 
 export default class Jugador {
   // Campos privados: los componentes de React no pueden modificarlos directamente.
