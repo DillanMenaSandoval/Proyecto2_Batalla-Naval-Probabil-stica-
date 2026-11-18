@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import Cuadricula, { nombreCelda } from "../componentes/Cuadricula.jsx"; // ajusta las rutas
+import Cuadricula, { nombreCelda } from "../componentes/Cuadriculas.jsx"; // ajusta las rutas
 import { FLOTA } from "../constantes/constantes.js";
 
 const clave = (c) => `${c.fila},${c.columna}`;

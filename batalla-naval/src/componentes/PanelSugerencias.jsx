@@ -1,4 +1,4 @@
-import { nombreCelda } from "./Cuadricula.jsx";
+import { nombreCelda } from "./Cuadriculas.jsx";
 import { FLOTA, TIPO_JUGADOR } from "../constantes/constantes.js"; 
 import { porcentaje } from "../utils/formatos.js";
 

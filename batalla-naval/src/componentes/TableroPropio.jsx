@@ -1,4 +1,4 @@
-import Cuadricula, { nombreCelda } from "./Cuadricula.jsx";
+import Cuadricula, { nombreCelda } from "./Cuadriculas.jsx";
 
 /**
  * Tu tablero: flota y disparos recibidos. No es interactivo.

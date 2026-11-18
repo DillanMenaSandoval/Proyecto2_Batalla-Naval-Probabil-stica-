@@ -4,7 +4,7 @@ import { ESTADO_PARTIDA } from "./juego/CicloDeJuego.js";
 import PantallaInicio from "./pantallas/PantallaInicio.jsx";
 import PantallaColocacion from "./pantallas/PantallaColocacion.jsx";
 import PantallaPartida from "./pantallas/PantallaPartida.jsx";
-import "./estilos/pantallas.css";
+import "./styles/Pantalla.css";
 
 export default function App() {
   const [enInicio, setEnInicio] = useState(true);

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import Cuadricula, { nombreCelda } from "./Cuadricula.jsx";
+import Cuadricula, { nombreCelda } from "./Cuadriculas.jsx";
 import { colorProbabilidad, GRADIENTE_MAPA } from "../utils/ColorMapa.js"; // ajusta la ruta
 import { RESULTADO_CELDA } from "../constantes/constantes.js"; // ajusta la ruta
 
