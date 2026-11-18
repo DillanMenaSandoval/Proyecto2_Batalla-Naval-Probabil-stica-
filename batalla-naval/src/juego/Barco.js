@@ -35,7 +35,7 @@ export default class Barco {
     return this.#tamaño;
   }
 
-  /** Copia de las celdas (no se expone el arreglo interno). */
+  /** Copia de las celdas */
   get celdas() {
     return this.#celdas.map((c) => ({ ...c }));
   }

@@ -3,13 +3,8 @@
  * Campo PROPIO de un jugador. Guarda la ubicación real de sus barcos y
  * resuelve los disparos que recibe.
  *
- * Se crea VACÍO y se llena con colocarBarco(). La partida solo puede
- * empezar cuando flotaCompleta() es true.
- *
- * Estructuras internas (solo se modifican desde colocarBarco, quitarBarco
- * y recibirDisparo, para que nunca se desincronicen):
+ * Se crea VACÍO y se llena con colocarBarco()
  *  - #celdas: matriz dimensión × dimensión de { idBarco, atacada }.
- *             Consulta inmediata por coordenada.
  *  - #barcos: Map id -> Barco. Sabe qué celdas ocupa cada barco y si se hundió.
  *
  * Formato de celda:      { fila, columna }
@@ -17,7 +12,7 @@
  * (nunca revela otras coordenadas del barco)
  */
 
-import { DIMENSION_TABLERO, FLOTA } from "../constantes/constantes.js"; // ajusta la ruta
+import { DIMENSION_TABLERO, FLOTA } from "../constantes/constantes.js";
 import Barco from "./Barco.js";
 
 export default class Tablero {
@@ -37,12 +32,8 @@ export default class Tablero {
     return this.#dimension;
   }
 
-  // ───────────── Consultas sobre la colocación ─────────────
+  // ───────────── Ccolocación ─────────────
 
-  /**
-   * ¿Se pueden ocupar todas estas celdas? (dentro del tablero y libres).
-   * Es la pregunta que usan colocacion.js y la interfaz.
-   */
   puedenOcuparse(celdas) {
     if (!Array.isArray(celdas) || celdas.length === 0) return false;
     return celdas.every(
@@ -64,7 +55,6 @@ export default class Tablero {
 
   /**
    * Coloca un barco. Es la ÚNICA forma de agregar barcos y valida todo,
-   * aunque la interfaz ya haya consultado puedenOcuparse.
    * @param {string} id  Id de FLOTA (PA, AC, CR, SM, DE).
    * @param {{fila:number, columna:number}[]} celdas
    */
@@ -147,10 +137,19 @@ export default class Tablero {
 
   /**
    * Copia del tablero PROPIO para dibujarlo en React.
-   * Matriz de { idBarco, atacada }. Nunca se usa para dibujar el tablero enemigo.
+   * Matriz de { idBarco, atacada, hundido }. 
+   *  - atacada y sin barco              -> agua
+   *  - atacada con barco, no hundido    -> impacto
+   *  - atacada con barco hundido        -> barco hundido
    */
   obtenerVistaPropia() {
-    return this.#celdas.map((fila) => fila.map((c) => ({ ...c })));
+    return this.#celdas.map((fila) =>
+      fila.map((c) => ({
+        idBarco: c.idBarco,
+        atacada: c.atacada,
+        hundido: c.idBarco !== null && this.#barcos.get(c.idBarco).estaHundido(),
+      }))
+    );
   }
 
   // ───────────── Internos ─────────────
@@ -167,7 +166,6 @@ export default class Tablero {
     );
   }
 
-  /** ¿Las celdas están en una misma fila o columna y son consecutivas? */
   #formanLineaRecta(celdas) {
     const mismaFila = celdas.every((c) => c.fila === celdas[0].fila);
     const mismaColumna = celdas.every((c) => c.columna === celdas[0].columna);
