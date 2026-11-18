@@ -1,0 +1,86 @@
+/*
+ * layout.css
+ * Cabecera, navegación por pestañas y contenedor principal.
+ * La pestaña activa toma el color del contenido para parecer parte de él.
+ */
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: var(--tinta);
+  color: var(--papel);
+  padding-top: var(--espacio-4);
+}
+
+.app-header__interior {
+  width: min(100% - 2 * var(--espacio-4), var(--ancho-contenido));
+  margin-inline: auto;
+}
+
+.app-header__marca {
+  font-size: var(--texto-lg);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding-bottom: var(--espacio-4);
+}
+
+.main-nav {
+  display: flex;
+  gap: var(--espacio-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.main-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.main-nav__pestana {
+  flex: 0 0 auto;
+  min-height: 2.75rem;
+  padding: var(--espacio-2) var(--espacio-5);
+  border: 0;
+  border-radius: var(--radio-md) var(--radio-md) 0 0;
+  background: transparent;
+  color: #b9cdd8;
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.main-nav__pestana:hover {
+  background: rgb(255 255 255 / 0.1);
+  color: var(--papel);
+}
+
+.main-nav__pestana--activa,
+.main-nav__pestana--activa:hover {
+  background: var(--agua);
+  color: var(--tinta);
+}
+
+.app-header :focus-visible {
+  outline-color: var(--ambar);
+}
+
+/* La barra de pestañas recorta lo que sale de ella: el foco se dibuja por dentro. */
+.main-nav__pestana:focus-visible {
+  outline-offset: -3px;
+}
+
+/* La pestaña activa es clara: el ámbar no contrasta sobre ella. */
+.main-nav__pestana--activa:focus-visible {
+  outline-color: var(--foco);
+}
+
+.app-layout__contenido {
+  flex: 1;
+  width: min(100% - 2 * var(--espacio-4), var(--ancho-contenido));
+  margin-inline: auto;
+  padding-block: var(--espacio-6) var(--espacio-7);
+}

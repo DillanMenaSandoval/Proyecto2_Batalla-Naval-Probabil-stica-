@@ -1,0 +1,241 @@
+/*
+ * game.css
+ * Pestaña Partida: encabezado, indicadores, controles y tableros.
+ * Los tableros son hojas de carta: regla de coordenadas y celdas con marcas
+ * que no dependen solo del color (punto = agua, aspa = impacto).
+ */
+
+.partida {
+  display: grid;
+  gap: var(--espacio-5);
+}
+
+.juego-encabezado {
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.juego-encabezado__titulo {
+  font-size: var(--texto-2xl);
+  line-height: 1.1;
+}
+
+.juego-encabezado__texto {
+  color: var(--tinta-suave);
+  max-width: 60ch;
+}
+
+/* ───────── Panel de estado, turno y controles ───────── */
+
+.partida__panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: stretch;
+  background: var(--papel);
+  border: 2px solid var(--tinta);
+  border-radius: var(--radio-md);
+}
+
+.indicador {
+  display: grid;
+  gap: var(--espacio-1);
+  align-content: start;
+  padding: var(--espacio-4) var(--espacio-5);
+  border-right: 2px solid var(--tinta);
+}
+
+.indicador__nombre {
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+
+.indicador__valor {
+  font-size: var(--texto-xl);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.indicador__detalle {
+  font-size: var(--texto-sm);
+  color: var(--tinta-suave);
+}
+
+.indicador--turno-activo {
+  background: var(--ambar-fondo);
+  box-shadow: inset 0 -4px 0 var(--ambar);
+}
+
+.controles {
+  display: grid;
+  gap: var(--espacio-2);
+  align-content: center;
+  padding: var(--espacio-4) var(--espacio-5);
+}
+
+.controles__botones {
+  display: flex;
+  gap: var(--espacio-3);
+}
+
+.controles__ayuda {
+  max-width: 26ch;
+  font-size: var(--texto-xs);
+  color: var(--tinta-suave);
+}
+
+/* ───────── Tableros ───────── */
+
+.partida__tableros {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-5);
+  align-items: start;
+}
+
+.tablero {
+  display: grid;
+  gap: var(--espacio-3);
+  padding: var(--espacio-4);
+  background: var(--papel);
+  border: 2px solid var(--tinta);
+  border-radius: var(--radio-md);
+}
+
+.tablero__titulo {
+  font-size: var(--texto-lg);
+}
+
+.tablero__descripcion {
+  font-size: var(--texto-sm);
+  color: var(--tinta-suave);
+}
+
+.tablero__rejilla {
+  display: grid;
+  grid-template-columns: 1.5rem repeat(var(--dimension), minmax(0, 1fr));
+  gap: 2px;
+}
+
+.tablero__regla,
+.tablero__esquina {
+  display: grid;
+  place-items: center;
+  font-family: var(--fuente-numeros);
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  color: var(--tinta-suave);
+  min-height: 1.5rem;
+}
+
+.celda {
+  position: relative;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-sm);
+  background: #e6f1f4;
+}
+
+.tablero--enemigo .celda--libre {
+  background: var(--agua-profunda);
+}
+
+button.celda:not(:disabled) {
+  cursor: crosshair;
+}
+
+button.celda:not(:disabled):hover {
+  background: var(--ambar-fondo);
+  border-color: var(--ambar);
+}
+
+button.celda:disabled {
+  cursor: default;
+}
+
+.celda--barco {
+  background: var(--tinta-suave);
+  border-color: var(--tinta);
+}
+
+.celda--agua::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--mar);
+}
+
+.celda--impacto,
+.celda--hundido {
+  background: var(--alarma);
+  border-color: var(--tinta);
+}
+
+.celda--impacto::before,
+.celda--impacto::after,
+.celda--hundido::before,
+.celda--hundido::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 62%;
+  height: 3px;
+  background: var(--papel);
+  transform: rotate(45deg);
+}
+
+.celda--impacto::after,
+.celda--hundido::after {
+  transform: rotate(-45deg);
+}
+
+.celda--hundido {
+  background: var(--tinta);
+}
+
+/* ───────── Pantallas estrechas ───────── */
+
+@media (max-width: 860px) {
+  .partida__panel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .indicador:nth-child(2) {
+    border-right: 0;
+  }
+
+  .controles {
+    grid-column: 1 / -1;
+    border-top: 2px solid var(--tinta);
+  }
+
+  .partida__tableros {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .partida__panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .indicador {
+    border-right: 0;
+    border-bottom: 2px solid var(--tinta);
+  }
+
+  .controles {
+    border-top: 0;
+  }
+
+  .controles__botones {
+    flex-wrap: wrap;
+  }
+}

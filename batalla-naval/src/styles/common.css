@@ -1,0 +1,62 @@
+/*
+ * common.css
+ * Componentes compartidos: botones y páginas pendientes.
+ */
+
+.boton {
+  min-height: 2.75rem;
+  padding: var(--espacio-2) var(--espacio-5);
+  border: 2px solid var(--tinta);
+  border-radius: var(--radio-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.boton--primario {
+  background: var(--tinta);
+  color: var(--papel);
+}
+
+.boton--primario:hover:not(:disabled) {
+  background: var(--mar);
+  border-color: var(--mar);
+}
+
+.boton--secundario {
+  background: transparent;
+  color: var(--tinta);
+}
+
+.boton--secundario:hover:not(:disabled) {
+  background: var(--agua-profunda);
+}
+
+.boton:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.boton:disabled {
+  border-color: var(--linea);
+  background: transparent;
+  color: var(--tinta-suave);
+  cursor: not-allowed;
+}
+
+.pagina-pendiente {
+  max-width: 40rem;
+  padding: var(--espacio-6);
+  border: 2px dashed var(--linea);
+  border-radius: var(--radio-md);
+  display: grid;
+  gap: var(--espacio-3);
+}
+
+.pagina-pendiente__titulo {
+  font-size: var(--texto-xl);
+}
+
+.pagina-pendiente__nota {
+  color: var(--tinta-suave);
+  font-size: var(--texto-sm);
+}

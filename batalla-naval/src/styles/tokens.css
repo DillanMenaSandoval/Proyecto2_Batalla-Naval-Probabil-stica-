@@ -1,0 +1,46 @@
+/*
+ * tokens.css
+ * Variables de diseño. Paleta tomada de una carta de navegación y de las
+ * banderas de señales: tinta azul marino, agua de carta, rojo de alarma
+ * para impactos y ámbar para el turno activo.
+ */
+
+:root {
+  /* Color */
+  --tinta: #0e2a3f;
+  --tinta-suave: #3d5a6c;
+  --mar: #2c6e8e;
+  --agua: #dceaee;
+  --agua-profunda: #c4d9e0;
+  --papel: #f5f9fa;
+  --linea: #9db4bf;
+  --alarma: #c8372d;
+  --ambar: #e8a317;
+  --ambar-fondo: #fbefd0;
+  --foco: #0b5cad;
+
+  /* Tipografía: pila del sistema, sin dependencias externas */
+  --fuente: "Bahnschrift", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --fuente-numeros: "Bahnschrift", "Segoe UI", system-ui, sans-serif;
+
+  --texto-xs: 0.8125rem;
+  --texto-sm: 0.9375rem;
+  --texto-md: 1rem;
+  --texto-lg: 1.25rem;
+  --texto-xl: 1.75rem;
+  --texto-2xl: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+
+  /* Espacio */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 0.75rem;
+  --espacio-4: 1rem;
+  --espacio-5: 1.5rem;
+  --espacio-6: 2rem;
+  --espacio-7: 3rem;
+
+  /* Forma */
+  --radio-sm: 3px;
+  --radio-md: 6px;
+  --ancho-contenido: 76rem;
+}
