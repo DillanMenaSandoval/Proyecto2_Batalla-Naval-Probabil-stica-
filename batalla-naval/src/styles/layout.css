@@ -68,6 +68,16 @@
   outline-color: var(--ambar);
 }
 
+/* La barra de pestañas recorta lo que sale de ella: el foco se dibuja por dentro. */
+.main-nav__pestana:focus-visible {
+  outline-offset: -3px;
+}
+
+/* La pestaña activa es clara: el ámbar no contrasta sobre ella. */
+.main-nav__pestana--activa:focus-visible {
+  outline-color: var(--foco);
+}
+
 .app-layout__contenido {
   flex: 1;
   width: min(100% - 2 * var(--espacio-4), var(--ancho-contenido));
