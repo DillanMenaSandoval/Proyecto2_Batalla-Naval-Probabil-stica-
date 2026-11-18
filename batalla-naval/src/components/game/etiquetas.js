@@ -4,10 +4,11 @@
  */
 
 import { TIPO_JUGADOR } from "../../constantes/constantes.js";
-import { ESTADO_BARCO, FASE_PARTIDA } from "../../services/contratoJuego.js";
+import { ESTADO_BARCO, FASE_PARTIDA, MOTIVO_RECHAZO } from "../../services/contratoJuego.js";
 
 export const ETIQUETA_FASE = Object.freeze({
   [FASE_PARTIDA.SIN_INICIAR]: "Sin iniciar",
+  [FASE_PARTIDA.FLOTA_PREPARADA]: "Flota preparada",
   [FASE_PARTIDA.COLOCACION]: "Colocando flota",
   [FASE_PARTIDA.EN_CURSO]: "En curso",
   [FASE_PARTIDA.FINALIZADA]: "Finalizada",
@@ -15,8 +16,15 @@ export const ETIQUETA_FASE = Object.freeze({
 
 export const ETIQUETA_ESTADO_BARCO = Object.freeze({
   [ESTADO_BARCO.SIN_INICIAR]: "Sin iniciar",
+  [ESTADO_BARCO.COLOCADO]: "Colocado",
   [ESTADO_BARCO.EN_JUEGO]: "En juego",
   [ESTADO_BARCO.HUNDIDO]: "Hundido",
+});
+
+/** Mensaje para el usuario cuando una acción es rechazada. */
+export const MENSAJE_RECHAZO = Object.freeze({
+  [MOTIVO_RECHAZO.GENERACION_FALLIDA]: "No se pudo generar la flota. El tablero no ha cambiado; inténtalo de nuevo.",
+  [MOTIVO_RECHAZO.LOGICA_NO_CONECTADA]: "Esta acción aún no está disponible.",
 });
 
 export const ETIQUETA_JUGADOR = Object.freeze({

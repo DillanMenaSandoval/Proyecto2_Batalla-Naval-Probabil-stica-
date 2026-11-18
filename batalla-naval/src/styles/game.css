@@ -78,6 +78,15 @@
   gap: var(--espacio-3);
 }
 
+.controles__error {
+  max-width: 30ch;
+  padding: var(--espacio-2) var(--espacio-3);
+  border-left: 4px solid var(--alarma);
+  background: #fbe7e5;
+  font-size: var(--texto-sm);
+  font-weight: 600;
+}
+
 .controles__ayuda {
   max-width: 26ch;
   font-size: var(--texto-xs);
@@ -267,6 +276,12 @@ button.celda:disabled {
 .barco--sin_iniciar .barco__segmento {
   border-style: dashed;
   background: transparent;
+}
+
+/* Colocado: mismo color que el barco en el tablero propio */
+.barco--colocado .barco__segmento {
+  border-color: var(--tinta);
+  background: var(--tinta-suave);
 }
 
 /* En juego: segmentos rellenos de azul */

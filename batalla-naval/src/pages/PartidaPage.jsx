@@ -10,11 +10,22 @@ import GameControls from "../components/game/GameControls.jsx";
 import GameHeader from "../components/game/GameHeader.jsx";
 import GameStatus from "../components/game/GameStatus.jsx";
 import TurnIndicator from "../components/game/TurnIndicator.jsx";
+import { MENSAJE_RECHAZO } from "../components/game/etiquetas.js";
 import { useGame } from "../hooks/useGame.js";
 
 export default function PartidaPage() {
-  const { estado, acciones, tableroPropio, tableroEnemigo, flota, iniciarPartida, reiniciarPartida, disparar } =
-    useGame();
+  const {
+    estado,
+    acciones,
+    tableroPropio,
+    tableroEnemigo,
+    flota,
+    rechazo,
+    generarFlota,
+    iniciarPartida,
+    reiniciarPartida,
+    disparar,
+  } = useGame();
 
   return (
     <div className="partida">
@@ -23,7 +34,13 @@ export default function PartidaPage() {
       <div className="partida__panel">
         <GameStatus estado={estado} />
         <TurnIndicator turno={estado.turno} />
-        <GameControls acciones={acciones} onIniciar={iniciarPartida} onReiniciar={reiniciarPartida} />
+        <GameControls
+          acciones={acciones}
+          mensajeError={rechazo ? (MENSAJE_RECHAZO[rechazo] ?? "No se pudo completar la acción.") : null}
+          onGenerarFlota={generarFlota}
+          onIniciar={iniciarPartida}
+          onReiniciar={reiniciarPartida}
+        />
       </div>
 
       <div className="partida__tableros">
