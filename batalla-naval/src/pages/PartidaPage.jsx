@@ -5,6 +5,7 @@
  */
 
 import Board from "../components/game/Board.jsx";
+import FleetStatus from "../components/game/FleetStatus.jsx";
 import GameControls from "../components/game/GameControls.jsx";
 import GameHeader from "../components/game/GameHeader.jsx";
 import GameStatus from "../components/game/GameStatus.jsx";
@@ -12,7 +13,8 @@ import TurnIndicator from "../components/game/TurnIndicator.jsx";
 import { useGame } from "../hooks/useGame.js";
 
 export default function PartidaPage() {
-  const { estado, acciones, tableroPropio, tableroEnemigo, iniciarPartida, reiniciarPartida, disparar } = useGame();
+  const { estado, acciones, tableroPropio, tableroEnemigo, flota, iniciarPartida, reiniciarPartida, disparar } =
+    useGame();
 
   return (
     <div className="partida">
@@ -40,6 +42,8 @@ export default function PartidaPage() {
           onDisparar={disparar}
         />
       </div>
+
+      <FleetStatus flota={flota} />
     </div>
   );
 }

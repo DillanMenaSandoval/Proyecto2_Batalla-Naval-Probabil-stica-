@@ -200,6 +200,95 @@ button.celda:disabled {
   background: var(--tinta);
 }
 
+/* ───────── Panel de flota ───────── */
+
+.flota {
+  display: grid;
+  gap: var(--espacio-3);
+  padding: var(--espacio-4);
+  background: var(--papel);
+  border: 2px solid var(--tinta);
+  border-radius: var(--radio-md);
+}
+
+.flota__titulo {
+  font-size: var(--texto-lg);
+}
+
+.flota__lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--espacio-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barco {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--espacio-2) var(--espacio-3);
+  padding: var(--espacio-3);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-sm);
+  background: #e6f1f4;
+}
+
+.barco__nombre {
+  font-weight: 700;
+}
+
+.barco__tamano {
+  font-size: var(--texto-sm);
+  color: var(--tinta-suave);
+}
+
+.barco__segmentos {
+  display: flex;
+  gap: 3px;
+  grid-column: 1 / -1;
+}
+
+.barco__segmento {
+  width: 1.5rem;
+  height: 1rem;
+  border: 2px solid var(--tinta-suave);
+  border-radius: var(--radio-sm);
+}
+
+.barco__estado {
+  grid-column: 1 / -1;
+  font-size: var(--texto-sm);
+  font-weight: 600;
+}
+
+/* Sin iniciar: segmentos huecos con borde discontinuo */
+.barco--sin_iniciar .barco__segmento {
+  border-style: dashed;
+  background: transparent;
+}
+
+/* En juego: segmentos rellenos de azul */
+.barco--en_juego .barco__segmento {
+  border-color: var(--mar);
+  background: var(--mar);
+}
+
+/* Hundido: segmentos oscuros con tacha; el texto también lo indica */
+.barco--hundido {
+  border-color: var(--alarma);
+}
+
+.barco--hundido .barco__segmento {
+  border-color: var(--tinta);
+  background: var(--tinta);
+}
+
+.barco--hundido .barco__nombre {
+  text-decoration: line-through;
+}
+
 /* ───────── Pantallas estrechas ───────── */
 
 @media (max-width: 860px) {
@@ -237,5 +326,16 @@ button.celda:disabled {
 
   .controles__botones {
     flex-wrap: wrap;
+  }
+
+  /* Cada barco en dos filas: nombre y tamaño; segmentos y estado */
+  .barco__segmentos {
+    grid-column: 1;
+    align-self: center;
+  }
+
+  .barco__estado {
+    grid-column: 2;
+    text-align: right;
   }
 }

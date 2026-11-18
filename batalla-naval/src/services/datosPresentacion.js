@@ -6,8 +6,8 @@
  * lógica real.
  */
 
-import { DIMENSION_TABLERO } from "../constantes/constantes.js";
-import { FASE_PARTIDA } from "./contratoJuego.js";
+import { DIMENSION_TABLERO, FLOTA } from "../constantes/constantes.js";
+import { ESTADO_BARCO, FASE_PARTIDA } from "./contratoJuego.js";
 
 const crearMatriz = (crearCelda, dimension = DIMENSION_TABLERO) =>
   Array.from({ length: dimension }, () => Array.from({ length: dimension }, crearCelda));
@@ -17,6 +17,10 @@ export const tableroPropioVacio = () =>
 
 export const tableroEnemigoVacio = () =>
   crearMatriz(() => ({ resultado: null, hundido: false }));
+
+/** Flota del jugador con todos los barcos «sin iniciar» (no hay partida). */
+export const flotaSinIniciar = () =>
+  FLOTA.map(({ id, nombre, tamaño }) => ({ id, nombre, tamaño, estado: ESTADO_BARCO.SIN_INICIAR }));
 
 export const estadoInicialPresentacion = Object.freeze({
   fase: FASE_PARTIDA.SIN_INICIAR,

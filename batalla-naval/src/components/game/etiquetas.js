@@ -4,13 +4,19 @@
  */
 
 import { TIPO_JUGADOR } from "../../constantes/constantes.js";
-import { FASE_PARTIDA } from "../../services/contratoJuego.js";
+import { ESTADO_BARCO, FASE_PARTIDA } from "../../services/contratoJuego.js";
 
 export const ETIQUETA_FASE = Object.freeze({
   [FASE_PARTIDA.SIN_INICIAR]: "Sin iniciar",
   [FASE_PARTIDA.COLOCACION]: "Colocando flota",
   [FASE_PARTIDA.EN_CURSO]: "En curso",
   [FASE_PARTIDA.FINALIZADA]: "Finalizada",
+});
+
+export const ETIQUETA_ESTADO_BARCO = Object.freeze({
+  [ESTADO_BARCO.SIN_INICIAR]: "Sin iniciar",
+  [ESTADO_BARCO.EN_JUEGO]: "En juego",
+  [ESTADO_BARCO.HUNDIDO]: "Hundido",
 });
 
 export const ETIQUETA_JUGADOR = Object.freeze({
