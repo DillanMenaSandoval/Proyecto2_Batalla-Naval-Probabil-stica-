@@ -12,6 +12,7 @@
 import { MOTIVO_RECHAZO } from "./contratoJuego.js";
 import {
   estadoInicialPresentacion,
+  flotaSinIniciar,
   tableroEnemigoVacio,
   tableroPropioVacio,
 } from "./datosPresentacion.js";
@@ -23,6 +24,7 @@ export function obtenerSnapshot() {
     acciones: { iniciar: false, reiniciar: false, disparar: false },
     tableroPropio: tableroPropioVacio(),
     tableroEnemigo: tableroEnemigoVacio(),
+    flota: flotaSinIniciar(),
   };
 }
 

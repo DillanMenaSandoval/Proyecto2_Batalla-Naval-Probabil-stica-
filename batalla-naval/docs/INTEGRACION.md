@@ -25,6 +25,7 @@ Los tipos de datos están en `src/services/contratoJuego.js`. Para integrar, sol
 | `GameStatus` | `estado.fase`, `estado.mensaje` | — | fase y mensaje del `CicloDeJuego` |
 | `TurnIndicator` | `estado.turno` (`"HUMANO"`, `"AUTOMATA"` o `null`) | — | turno del `CicloDeJuego` |
 | `GameControls` | `acciones.iniciar`, `acciones.reiniciar` | `onIniciar()`, `onReiniciar()` | `CicloDeJuego` |
+| `FleetStatus` | `flota`: `BarcoFlota[]` (`id`, `nombre`, `tamaño`, `estado`: `SIN_INICIAR` / `EN_JUEGO` / `HUNDIDO`) | — | `FLOTA` (nombre y tamaño) + `Barco.estaHundido()` e impactos recibidos, sin exponer las celdas del barco |
 | `Board` (propio) | matriz `CeldaPropia[10][10]` | — | `Tablero.obtenerVistaPropia()` (mismo formato) |
 | `Board` (enemigo) | matriz `CeldaEnemiga[10][10]`, `interactivo` | `onDisparar({fila, columna})` | `Jugador.obtenerConocimiento().celdasExploradas` |
 

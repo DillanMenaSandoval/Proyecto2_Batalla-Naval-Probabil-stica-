@@ -16,6 +16,13 @@ export const FASE_PARTIDA = Object.freeze({
   FINALIZADA: "FINALIZADA",
 });
 
+/** Estado de un barco de la flota del jugador. */
+export const ESTADO_BARCO = Object.freeze({
+  SIN_INICIAR: "SIN_INICIAR",
+  EN_JUEGO: "EN_JUEGO",
+  HUNDIDO: "HUNDIDO",
+});
+
 /** Motivos de rechazo que devuelven las acciones del servicio. */
 export const MOTIVO_RECHAZO = Object.freeze({
   LOGICA_NO_CONECTADA: "LOGICA_NO_CONECTADA",
@@ -41,11 +48,17 @@ export const MOTIVO_RECHAZO = Object.freeze({
  * Qué acciones puede ofrecer la interfaz en este momento.
  * @typedef {{iniciar:boolean, reiniciar:boolean, disparar:boolean}} AccionesDisponibles
  *
+ * Un barco de la flota del jugador. `id`, `nombre` y `tamaño` vienen de FLOTA;
+ * `estado` es uno de ESTADO_BARCO (se derivará de Barco.estaHundido() y de sus
+ * impactos, sin exponer las celdas del barco).
+ * @typedef {{id:string, nombre:string, tamaño:number, estado:string}} BarcoFlota
+ *
  * @typedef {{
  *   estado: EstadoPartida,
  *   acciones: AccionesDisponibles,
  *   tableroPropio: CeldaPropia[][],
- *   tableroEnemigo: CeldaEnemiga[][]
+ *   tableroEnemigo: CeldaEnemiga[][],
+ *   flota: BarcoFlota[]
  * }} SnapshotPartida
  *
  * @typedef {{ok:true}|{ok:false, motivo:string}} ResultadoAccion
