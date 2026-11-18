@@ -11,7 +11,8 @@
 /** Fases de la partida que la interfaz sabe mostrar. */
 export const FASE_PARTIDA = Object.freeze({
   SIN_INICIAR: "SIN_INICIAR",
-  COLOCACION: "COLOCACION",
+  FLOTA_PREPARADA: "FLOTA_PREPARADA", // flota generada; la partida aún no ha comenzado
+  COLOCACION: "COLOCACION", // colocación manual (aún no implementada)
   EN_CURSO: "EN_CURSO",
   FINALIZADA: "FINALIZADA",
 });
@@ -19,13 +20,15 @@ export const FASE_PARTIDA = Object.freeze({
 /** Estado de un barco de la flota del jugador. */
 export const ESTADO_BARCO = Object.freeze({
   SIN_INICIAR: "SIN_INICIAR",
-  EN_JUEGO: "EN_JUEGO",
+  COLOCADO: "COLOCADO", // colocado en el tablero, sin partida en curso
+  EN_JUEGO: "EN_JUEGO", // partida en curso (aún no implementada)
   HUNDIDO: "HUNDIDO",
 });
 
 /** Motivos de rechazo que devuelven las acciones del servicio. */
 export const MOTIVO_RECHAZO = Object.freeze({
   LOGICA_NO_CONECTADA: "LOGICA_NO_CONECTADA",
+  GENERACION_FALLIDA: "GENERACION_FALLIDA", // no se pudo generar una flota válida
 });
 
 /**
@@ -46,7 +49,7 @@ export const MOTIVO_RECHAZO = Object.freeze({
  * }} EstadoPartida
  *
  * Qué acciones puede ofrecer la interfaz en este momento.
- * @typedef {{iniciar:boolean, reiniciar:boolean, disparar:boolean}} AccionesDisponibles
+ * @typedef {{generarFlota:boolean, iniciar:boolean, reiniciar:boolean, disparar:boolean}} AccionesDisponibles
  *
  * Un barco de la flota del jugador. `id`, `nombre` y `tamaño` vienen de FLOTA;
  * `estado` es uno de ESTADO_BARCO (se derivará de Barco.estaHundido() y de sus

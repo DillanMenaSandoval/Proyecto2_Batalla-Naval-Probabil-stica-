@@ -36,7 +36,8 @@ Los tipos de datos están en `src/services/contratoJuego.js`. Para integrar, sol
 | Función | Devuelve | Debe hacer |
 |---|---|---|
 | `obtenerSnapshot()` | `SnapshotPartida` | Leer el estado actual y traducirlo al contrato. |
-| `iniciarPartida()` | `{ok}` / `{ok:false, motivo}` | Crear jugadores y tableros, colocar la flota, fijar el primer turno. |
+| `generarFlota()` | `{ok}` / `{ok:false, motivo}` | **Conectada.** Crea un `Tablero` nuevo, llama a `colocarFlotaAleatoria` y, solo si la flota queda completa (5 barcos, 17 celdas), reemplaza la anterior. Si falla devuelve `GENERACION_FALLIDA` y conserva el último estado válido. Fase resultante: `FLOTA_PREPARADA`. |
+| `iniciarPartida()` | `{ok}` / `{ok:false, motivo}` | Crear jugadores y tableros, fijar el primer turno (la flota ya puede venir de `generarFlota()`). |
 | `reiniciarPartida()` | `{ok}` / `{ok:false, motivo}` | Descartar la partida y volver a `SIN_INICIAR`. |
 | `disparar(celda)` | `{ok}` / `{ok:false, motivo}` | Turno humano: `Jugador.seleccionarObjetivo(celda)` → `Tablero.recibirDisparo` del rival → `Jugador.registrarResultado`. Después el turno del agente. |
 
@@ -63,7 +64,7 @@ Faltan y la interfaz las necesitará:
 ### Análisis
 
 - `App.jsx` renderiza **solo la página activa**. Al cambiar de pestaña React desmonta `PartidaPage`, y con ella `useGame`, cuyo `useState` es local al componente: ese estado se destruye y al volver se pide un snapshot nuevo.
-- **Hoy no se pierde nada**, porque `gameService.obtenerSnapshot()` devuelve siempre datos vacíos y no existe una partida que conservar.
+- **Hoy lo único que se conserva es la flota generada**, y sobrevive porque el `Tablero` vive en el módulo `gameService` (fuera de React). `useGame` la recupera con `obtenerSnapshot()` al volver a montarse. No hay todavía otra partida que conservar.
 - **Se perdería** en cuanto el servicio use la lógica real, si `gameService` no guarda la partida (por ejemplo, si cada llamada crea un `CicloDeJuego` nuevo) o si la partida vive en un `useState` de la página.
 - Hay un segundo requisito: Probabilidades y Estadísticas deben leer **la misma partida** que Partida. Con estado local de página no podrían.
 
