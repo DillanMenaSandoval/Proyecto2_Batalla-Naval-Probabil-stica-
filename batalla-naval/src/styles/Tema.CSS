@@ -1,0 +1,58 @@
+/* tema.css — importar una sola vez (por ejemplo en main.jsx) */
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&display=swap");
+
+:root {
+  /* Paleta base (la tuya) */
+  --indigo: #252B59;
+  --violeta: #65418F;
+  --cian: #48C5F2;
+  --rosa: #E83D9B;
+  --oro: #D6B66F;
+
+  /* Derivados del índigo: fondos y superficies */
+  --fondo: #1A1E3E;
+  --fondo-profundo: #12152C;
+  --superficie: var(--indigo);
+  --superficie-alta: #322F64;
+  --linea: #3B4480;
+
+  /* Texto */
+  --texto: #EEF0FF;
+  --texto-suave: #A9B0DE;
+
+  /* Tablero */
+  --mar: #336996; /* debe coincidir con la primera parada de utils/colorMapa.js */
+  --agua: #264B73;
+  --casco: #C9C4EC;
+  --impacto-fondo: var(--fondo-profundo);
+
+  --fuente: "Bricolage Grotesque", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font: 400 1rem/1.5 var(--fuente);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.panel {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
