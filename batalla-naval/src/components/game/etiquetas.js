@@ -24,6 +24,10 @@ export const ETIQUETA_ESTADO_BARCO = Object.freeze({
 /** Mensaje para el usuario cuando una acción es rechazada. */
 export const MENSAJE_RECHAZO = Object.freeze({
   [MOTIVO_RECHAZO.GENERACION_FALLIDA]: "No se pudo generar la flota. El tablero no ha cambiado; inténtalo de nuevo.",
+  [MOTIVO_RECHAZO.FLOTA_NO_PREPARADA]: "Genera una flota antes de iniciar la partida.",
+  [MOTIVO_RECHAZO.PARTIDA_EN_CURSO]: "La partida ya está en curso. Reiníciala para preparar otra flota.",
+  [MOTIVO_RECHAZO.INICIO_FALLIDO]: "No se pudo iniciar la partida. Todo sigue como estaba; inténtalo de nuevo.",
+  [MOTIVO_RECHAZO.NADA_QUE_REINICIAR]: "No hay ninguna flota ni partida que reiniciar.",
   [MOTIVO_RECHAZO.LOGICA_NO_CONECTADA]: "Esta acción aún no está disponible.",
 });
 

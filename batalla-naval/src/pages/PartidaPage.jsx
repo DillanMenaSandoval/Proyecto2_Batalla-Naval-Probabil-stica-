@@ -52,7 +52,7 @@ export default function PartidaPage() {
         />
         <Board
           titulo="Aguas enemigas"
-          descripcion="Elige una celda para disparar."
+          descripcion="Las posiciones enemigas permanecen ocultas."
           tipo="enemigo"
           celdas={tableroEnemigo}
           interactivo={acciones.disparar}

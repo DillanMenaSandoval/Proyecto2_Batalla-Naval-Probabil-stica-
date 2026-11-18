@@ -1,6 +1,6 @@
 # Integración interfaz ↔ lógica
 
-Estado: la interfaz de la pestaña **Partida** está construida con datos de presentación. Ninguna regla del juego vive en componentes React.
+Estado: la pestaña **Partida** ya recorre el ciclo de vida `SIN_INICIAR → FLOTA_PREPARADA → EN_CURSO` (y vuelve con Reiniciar) usando `Tablero` y `Colocacion`. Aún no hay disparos, turnos ni agente. Ninguna regla del juego vive en componentes React.
 
 ## Flujo
 
@@ -24,10 +24,10 @@ Los tipos de datos están en `src/services/contratoJuego.js`. Para integrar, sol
 | `GameHeader` | ninguno (texto fijo) | — | — |
 | `GameStatus` | `estado.fase`, `estado.mensaje` | — | fase y mensaje del `CicloDeJuego` |
 | `TurnIndicator` | `estado.turno` (`"HUMANO"`, `"AUTOMATA"` o `null`) | — | turno del `CicloDeJuego` |
-| `GameControls` | `acciones.generarFlota`, `acciones.iniciar`, `acciones.reiniciar`; `mensajeError` opcional | `onGenerarFlota()` (conectada), `onIniciar()`, `onReiniciar()` | `Tablero` + `colocarFlotaAleatoria`; `CicloDeJuego` para las demás |
+| `GameControls` | `acciones.generarFlota`, `acciones.iniciar`, `acciones.reiniciar`; `mensajeError` opcional | `onGenerarFlota()`, `onIniciar()`, `onReiniciar()` (las tres conectadas) | `Tablero` + `colocarFlotaAleatoria`, en `gameService` |
 | `FleetStatus` | `flota`: `BarcoFlota[]` (`id`, `nombre`, `tamaño`, `estado`: `SIN_INICIAR` / `COLOCADO` / `EN_JUEGO` / `HUNDIDO`) | — | `FLOTA` (nombre y tamaño) + `Barco.estaHundido()` e impactos recibidos, sin exponer las celdas del barco |
 | `Board` (propio) | matriz `CeldaPropia[10][10]` | — | `Tablero.obtenerVistaPropia()` (mismo formato) |
-| `Board` (enemigo) | matriz `CeldaEnemiga[10][10]`, `interactivo` | `onDisparar({fila, columna})` | `Jugador.obtenerConocimiento().celdasExploradas` |
+| `Board` (enemigo) | matriz `CeldaEnemiga[10][10]`, `interactivo` | `onDisparar({fila, columna})` | `Jugador.obtenerConocimiento().celdasExploradas`. Hoy siempre vacía: la flota enemiga existe solo dentro de `gameService` |
 
 ## Operaciones que debe proporcionar la lógica
 
@@ -37,9 +37,34 @@ Los tipos de datos están en `src/services/contratoJuego.js`. Para integrar, sol
 |---|---|---|
 | `obtenerSnapshot()` | `SnapshotPartida` | Leer el estado actual y traducirlo al contrato. |
 | `generarFlota()` | `{ok}` / `{ok:false, motivo}` | **Conectada.** Crea un `Tablero` nuevo, llama a `colocarFlotaAleatoria` y, solo si la flota queda completa (5 barcos, 17 celdas), reemplaza la anterior. Si falla devuelve `GENERACION_FALLIDA` y conserva el último estado válido. Fase resultante: `FLOTA_PREPARADA`. |
-| `iniciarPartida()` | `{ok}` / `{ok:false, motivo}` | Crear jugadores y tableros, fijar el primer turno (la flota ya puede venir de `generarFlota()`). |
-| `reiniciarPartida()` | `{ok}` / `{ok:false, motivo}` | Descartar la partida y volver a `SIN_INICIAR`. |
+| `iniciarPartida()` | `{ok}` / `{ok:false, motivo}` | **Conectada.** Exige la flota propia completa (no la modifica), crea en privado un `Tablero` enemigo válido (5 barcos, 17 celdas) y pasa a `EN_CURSO`. Rechaza con `FLOTA_NO_PREPARADA`, `PARTIDA_EN_CURSO` o `INICIO_FALLIDO` (si no se pudo crear la flota enemiga; no se publica nada). Todavía no crea `Jugador` ni asigna turno. |
+| `reiniciarPartida()` | `{ok}` / `{ok:false, motivo}` | **Conectada.** Descarta ambos tableros y vuelve a `SIN_INICIAR`, desde `FLOTA_PREPARADA` o `EN_CURSO`. Sin flota ni partida devuelve `NADA_QUE_REINICIAR`. No hay estadísticas ni contadores que restablecer todavía. |
 | `disparar(celda)` | `{ok}` / `{ok:false, motivo}` | Turno humano: `Jugador.seleccionarObjetivo(celda)` → `Tablero.recibirDisparo` del rival → `Jugador.registrarResultado`. Después el turno del agente. |
+
+## Ciclo de vida de la partida
+
+La fase **se deduce** de qué tableros guarda `gameService` (sin tablero propio → `SIN_INICIAR`; solo propio → `FLOTA_PREPARADA`; propio y enemigo → `EN_CURSO`), por lo que no puede quedar desincronizada. Las acciones que ofrece cada fase están en `ACCIONES_FASE` y llegan a la interfaz en `snapshot.acciones`; los botones solo las obedecen.
+
+| Fase | Generar flota | Iniciar | Reiniciar | Disparar |
+|---|---|---|---|---|
+| `SIN_INICIAR` | sí | no | no | no |
+| `FLOTA_PREPARADA` | sí (flota nueva) | sí | sí | no |
+| `EN_CURSO` | no | no | sí | no (aún no implementado) |
+
+Transiciones admitidas (el resto se rechaza con un motivo y no cambia nada):
+
+| Desde | Acción | Hasta |
+|---|---|---|
+| `SIN_INICIAR` | `generarFlota` | `FLOTA_PREPARADA` |
+| `FLOTA_PREPARADA` | `generarFlota` | `FLOTA_PREPARADA` |
+| `FLOTA_PREPARADA` | `iniciarPartida` | `EN_CURSO` |
+| `FLOTA_PREPARADA`, `EN_CURSO` | `reiniciarPartida` | `SIN_INICIAR` |
+
+Estado de los barcos propios: `SIN_INICIAR` (sin flota), `COLOCADO` (flota preparada) y `EN_JUEGO` (partida en curso). `HUNDIDO` queda para cuando existan disparos.
+
+**Flota enemiga oculta.** El `Tablero` enemigo no sale de `gameService`: el snapshot trae siempre un tablero enemigo sin información y no existe otro campo con sus posiciones. Las pruebas lo comprueban prediciendo la flota con un generador con semilla.
+
+**Pruebas.** `npm test` ejecuta `src/services/gameService.test.js` con `node:test` (sin dependencias nuevas): transiciones, acciones por fase, flota propia intacta al iniciar, flota enemiga válida y oculta, rechazo de doble inicio, reinicio desde ambas fases y errores que no dejan estados a medias.
 
 ## Piezas que existen y piezas que faltan
 
@@ -64,7 +89,7 @@ Faltan y la interfaz las necesitará:
 ### Análisis
 
 - `App.jsx` renderiza **solo la página activa**. Al cambiar de pestaña React desmonta `PartidaPage`, y con ella `useGame`, cuyo `useState` es local al componente: ese estado se destruye y al volver se pide un snapshot nuevo.
-- **Hoy lo único que se conserva es la flota generada**, y sobrevive porque el `Tablero` vive en el módulo `gameService` (fuera de React). `useGame` la recupera con `obtenerSnapshot()` al volver a montarse. No hay todavía otra partida que conservar.
+- **Hoy se conservan la flota generada y la partida iniciada**, y sobreviven porque los `Tablero` viven en el módulo `gameService` (fuera de React). `useGame` las recupera con `obtenerSnapshot()` al volver a montarse. No hay otro estado de partida (disparos, turnos) que conservar todavía.
 - **Se perdería** en cuanto el servicio use la lógica real, si `gameService` no guarda la partida (por ejemplo, si cada llamada crea un `CicloDeJuego` nuevo) o si la partida vive en un `useState` de la página.
 - Hay un segundo requisito: Probabilidades y Estadísticas deben leer **la misma partida** que Partida. Con estado local de página no podrían.
 

@@ -13,15 +13,24 @@ export const FASE_PARTIDA = Object.freeze({
   SIN_INICIAR: "SIN_INICIAR",
   FLOTA_PREPARADA: "FLOTA_PREPARADA", // flota generada; la partida aún no ha comenzado
   COLOCACION: "COLOCACION", // colocación manual (aún no implementada)
-  EN_CURSO: "EN_CURSO",
-  FINALIZADA: "FINALIZADA",
+  EN_CURSO: "EN_CURSO", // ambas flotas listas; aún sin disparos ni turnos
+  FINALIZADA: "FINALIZADA", // aún no se alcanza (no hay disparos)
 });
+
+/**
+ * Transiciones admitidas (cualquier otra acción se rechaza con un motivo):
+ *   SIN_INICIAR     --generarFlota-->   FLOTA_PREPARADA
+ *   FLOTA_PREPARADA --generarFlota-->   FLOTA_PREPARADA (flota nueva)
+ *   FLOTA_PREPARADA --iniciarPartida--> EN_CURSO
+ *   FLOTA_PREPARADA --reiniciarPartida--> SIN_INICIAR
+ *   EN_CURSO        --reiniciarPartida--> SIN_INICIAR
+ */
 
 /** Estado de un barco de la flota del jugador. */
 export const ESTADO_BARCO = Object.freeze({
   SIN_INICIAR: "SIN_INICIAR",
   COLOCADO: "COLOCADO", // colocado en el tablero, sin partida en curso
-  EN_JUEGO: "EN_JUEGO", // partida en curso (aún no implementada)
+  EN_JUEGO: "EN_JUEGO", // partida en curso y el barco sigue a flote
   HUNDIDO: "HUNDIDO",
 });
 
@@ -29,6 +38,10 @@ export const ESTADO_BARCO = Object.freeze({
 export const MOTIVO_RECHAZO = Object.freeze({
   LOGICA_NO_CONECTADA: "LOGICA_NO_CONECTADA",
   GENERACION_FALLIDA: "GENERACION_FALLIDA", // no se pudo generar una flota válida
+  FLOTA_NO_PREPARADA: "FLOTA_NO_PREPARADA", // iniciar sin una flota propia completa
+  PARTIDA_EN_CURSO: "PARTIDA_EN_CURSO", // la acción no es válida con la partida iniciada
+  INICIO_FALLIDO: "INICIO_FALLIDO", // no se pudo preparar la flota enemiga
+  NADA_QUE_REINICIAR: "NADA_QUE_REINICIAR", // reiniciar sin flota ni partida
 });
 
 /**

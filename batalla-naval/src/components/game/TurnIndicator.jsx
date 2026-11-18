@@ -15,7 +15,7 @@ export default function TurnIndicator({ turno }) {
       <p className="indicador__nombre">Turno actual</p>
       <p className="indicador__valor">{turno ? ETIQUETA_JUGADOR[turno] : "Sin turno"}</p>
       <p className="indicador__detalle">
-        {turno ? "Esperando el disparo." : "El turno se asigna al iniciar la partida."}
+        {turno ? "Esperando el disparo." : "Los turnos aún no están disponibles."}
       </p>
     </div>
   );
