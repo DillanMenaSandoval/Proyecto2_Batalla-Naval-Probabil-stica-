@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { DIMENSION_TABLERO } from "../constantes/constantes.js"; // ajusta la ruta
+import { DIMENSION_TABLERO } from "../constantes/constantes.js";
 import "./Cuadricula.css";
 
 const INDICES = Array.from({ length: DIMENSION_TABLERO }, (_, i) => i);
@@ -9,8 +9,8 @@ const letra = (columna) => String.fromCharCode(65 + columna);
 export const nombreCelda = (fila, columna) => `${letra(columna)}${fila + 1}`;
 
 /**
- * Cuadrícula genérica. No sabe nada del juego: cada tablero le dice cómo
- * dibujar sus celdas con describirCelda(fila, columna), que devuelve:
+ * Cuadrícula genérica.
+ * devuelve:
  *   { estado, color?, recomendada?, seleccionable?, etiqueta }
  *   - estado: "mar" | "barco" | "agua" | "impacto" | "hundido"
  *   - color: color CSS de fondo para celdas "mar" (mapa de calor)

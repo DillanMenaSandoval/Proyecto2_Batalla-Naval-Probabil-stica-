@@ -10,8 +10,8 @@ const porcentaje = new Intl.NumberFormat("es", {
 });
 
 /**
- * Tablero donde el humano dispara. Todo llega ya preparado desde
- * CicloDeJuego.obtenerEstadoParaUI(): este componente nunca toca objetos del juego.
+ * Tablero donde el humano dispara. 
+ * este componente nunca toca objetos del juego.
  *
  * @param {{celdasExploradas: object[], barcosHundidos: string[]}} conocimiento  estado.tableroEnemigo
  * @param {(number|null)[][]|null} mapa      estado.mapaProbabilidades (null si está oculto)

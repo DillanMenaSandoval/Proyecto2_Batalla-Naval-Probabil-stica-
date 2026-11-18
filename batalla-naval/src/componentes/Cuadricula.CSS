@@ -141,3 +141,14 @@ button.celda:focus-visible {
   height: 0.6rem;
   border-radius: 999px;
 }
+
+/* ───────────── Colocación manual ───────────── */
+
+.celda--candidata {
+  background: #3e97c4;
+  box-shadow: inset 0 0 0 2px var(--cian);
+}
+
+.celda--seleccionada {
+  background: var(--cian);
+}
