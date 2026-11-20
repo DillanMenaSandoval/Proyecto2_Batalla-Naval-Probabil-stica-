@@ -1,4 +1,4 @@
-import { porcentaje } from "../utils/formatos.js"; 
+import { porcentaje } from "../utils/Formatos.js"; 
 
 const precision = ({ impactos, disparos }) => (disparos ? porcentaje.format(impactos / disparos) : "–");
 
