@@ -1,21 +1,18 @@
 /**
  * usePartida.js
- * Puente entre React y la lógica del juego. Es el ÚNICO lugar de la interfaz
- * que tiene acceso a los objetos Jugador, Tablero y CicloDeJuego. Los
- * componentes reciben solo datos (copias) y llaman a acciones.
- *
+ * Puente entre React y la lógica del juego
  * Devuelve:
- *   vista         estado listo para pintar (ver instantanea)
- *   ultimoEvento  resultado del último disparo, de cualquiera de los dos jugadores
+ *   vista         estado listo para pintar 
+ *   ultimoEvento  resultado del último disparo
  *   error         mensaje de error de la última acción, o null
  *   acciones      funciones que usan los componentes
  *
- * Uso:
+ *  Constructor:
  *   const { vista, ultimoEvento, error, acciones } = usePartida();
  */
 
 import { useEffect, useState } from "react";
-import Jugador from "../juego/Jugador.js"; // ajusta las rutas
+import Jugador from "../juego/Jugador.js"; 
 import Tablero from "../juego/Tablero.js";
 import CicloDeJuego, { ESTADO_PARTIDA } from "../juego/CicloDeJuego.js";
 import {
@@ -25,40 +22,39 @@ import {
 import MapaProbabilidades from "../algoritmos/MapaProbabilidades.js";
 import Simulador from "../algoritmos/Simulador.js";
 import CalcularProbabilidades from "../algoritmos/CalcularProbabilidades.js";
-import { TIPO_JUGADOR } from "../constantes/constantes.js";
+import { SIMULACIONES_POR_DEFECTO, TIPO_JUGADOR } from "../constantes/constantes.js";
 
-const SIMULACIONES = 1000; // valor provisional: es el parámetro experimental del algoritmo
-const PAUSA_AUTOMATA_MS = 700; // para que se vea el disparo del humano antes de la respuesta
+const PAUSA_AUTOMATA_MS = 700;
 
-function crearJuego() {
+function crearJuego(simulaciones) {
   const humano = new Jugador(TIPO_JUGADOR.HUMANO, new Tablero(), new MapaProbabilidades());
   const automata = new Jugador(TIPO_JUGADOR.AUTOMATA, new Tablero(), new MapaProbabilidades());
   const calculadora = new CalcularProbabilidades(new Simulador());
-  const partida = new CicloDeJuego(humano, automata, calculadora, { simulaciones: SIMULACIONES });
+  const partida = new CicloDeJuego(humano, automata, calculadora, { simulaciones });
   return { humano, automata, partida };
 }
 
 /**
- * Copia del estado para guardar en React. Todo son datos planos: sin objetos
- * del juego, y sin nada del tablero ni del mapa del autómata.
+ * Copia del estado para guardar en React
  */
 function instantanea({ humano, partida }) {
   return {
-    ...partida.obtenerEstadoParaUI(), // estado, turno, ganador, miTablero, tableroEnemigo,
-    //                                   mapaProbabilidades, objetivoRecomendado, metricasMapa, estadisticas
+    ...partida.obtenerEstadoParaUI(), 
     mostrarMapa: partida.mostrarMapaHumano,
+    simulaciones: partida.simulaciones, // configuraciones hipotéticas por cálculo
     colocados: humano.tablero.obtenerIdsColocados(), // ids de los barcos ya colocados
     flotaCompleta: humano.tablero.flotaCompleta(),
   };
 }
 
-function crearEstado() {
-  const juego = crearJuego();
+function crearEstado(simulaciones) {
+  const juego = crearJuego(simulaciones);
   return { juego, vista: instantanea(juego) };
 }
 
 export default function usePartida() {
-  const [{ juego, vista }, setEstado] = useState(crearEstado);
+  const [simulaciones, setSimulaciones] = useState(SIMULACIONES_POR_DEFECTO);
+  const [{ juego, vista }, setEstado] = useState(() => crearEstado(simulaciones));
   const [ultimoEvento, setUltimoEvento] = useState(null);
   const [error, setError] = useState(null);
 
@@ -66,7 +62,7 @@ export default function usePartida() {
 
   const refrescar = () => setEstado((e) => ({ ...e, vista: instantanea(e.juego) }));
 
-  /** Ejecuta una acción del juego, captura errores y actualiza la vista. */
+  /** Ejecuta una acción del juego y actualiza la vista. */
   const ejecutar = (accion) => {
     try {
       setError(null);
@@ -77,7 +73,7 @@ export default function usePartida() {
     }
   };
 
-  // Turno del autómata: se programa cuando le toca y se cancela si cambia la partida
+  // Turno del autómata
   useEffect(() => {
     if (vista.estado !== ESTADO_PARTIDA.EN_CURSO || vista.turno !== TIPO_JUGADOR.AUTOMATA) return;
 
@@ -95,7 +91,7 @@ export default function usePartida() {
 
   const acciones = {
     // ── Colocación de la flota del humano ──
-    /** Celdas que se pueden elegir a continuación (devuelve datos, no objetos). */
+    /** Celdas que se pueden elegir */
     celdasCandidatas: (tamaño, seleccionadas) =>
       calcularCandidatas(humano.tablero, tamaño, seleccionadas),
     colocarBarco: (id, celdas) => ejecutar(() => humano.tablero.colocarBarco(id, celdas)),
@@ -108,9 +104,16 @@ export default function usePartida() {
     alternarMapa: () =>
       ejecutar(() => partida.establecerMostrarMapaHumano(!partida.mostrarMapaHumano)),
 
-    // ── Reinicio: un CicloDeJuego no se reutiliza, se crea todo de nuevo ──
+    // ── Configuraciones para el cálculo ──
+    establecerSimulaciones: (cantidad) =>
+      ejecutar(() => {
+        partida.establecerSimulaciones(cantidad);
+        setSimulaciones(cantidad);
+      }),
+
+    // ── Reinicio: se crea todo de nuevo ──
     nuevaPartida: () => {
-      setEstado(crearEstado());
+      setEstado(crearEstado(simulaciones));
       setUltimoEvento(null);
       setError(null);
     },

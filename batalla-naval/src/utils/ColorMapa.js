@@ -1,16 +1,13 @@
 /**
  * colorMapa.js
  * Convierte una probabilidad en el color del mapa de calor:
- * azul de mar (poco probable) -> ciruela -> rosa (lo más probable).
- *
- * La escala es relativa al MÁXIMO del mapa, no a 1: si casi todas las celdas
- * tienen probabilidades bajas, una escala absoluta se vería casi uniforme.
+ * azul = poco probable) /  rosa = más probable
  */
 
 const PARADAS = [
-  { t: 0, rgb: [51, 105, 150] }, // #336996 mar (igual a --mar en tema.css)
-  { t: 0.5, rgb: [153, 63, 148] }, // #993F94 ciruela: del violeta de la paleta hacia el rosa
-  { t: 1, rgb: [232, 61, 155] }, // #E83D9B rosa de la paleta
+  { t: 0, rgb: [51, 105, 150] }, // #336996 mar 
+  { t: 0.5, rgb: [153, 63, 148] }, // #993F94 violeta
+  { t: 1, rgb: [232, 61, 155] }, // #E83D9B rosa
 ];
 
 const aCss = ([r, g, b]) => `rgb(${r} ${g} ${b})`;

@@ -7,18 +7,16 @@
  *  - reestima el mapa de probabilidades con el conocimiento del atacante,
  *  - comprueba la condición de victoria.
  *
- * Los Jugador solo conocen su tablero propio; 
+ * Los Jugador solo conocen su tablero propio
  * El ciclo es el único que conecta atacante y tablero defensor
- *
- * Flujo de un disparo:
- *   1. el tablero defensor resuelve el disparo y responde de forma limitada
- *   2. el atacante registra el resultado
- *   3. si se hundió un barco, se comprueba si el defensor perdió
- *   4. si la partida sigue, se reestima el mapa del atacante y cambia el turno
- *
+ * Flujo de un disparo
+ * Flujo de uso
+ *   partida.iniciarPartida();
+ *   partida.jugarTurnoHumano(celda);
+ *   partida.jugarTurnoAutomata();
  */
 
-import { TIPO_JUGADOR } from "../constantes/constantes.js"; 
+import { TIPO_JUGADOR } from "../constantes/constantes.js";
 import { colocarFlotaAleatoria } from "./Colocacion.js";
 
 export const ESTADO_PARTIDA = Object.freeze({
@@ -36,18 +34,16 @@ export default class CicloDeJuego {
   #mostrarMapaHumano;
 
   #estado = ESTADO_PARTIDA.PREPARACION;
-  #turno = null; // Jugador al que le toca, o null si no hay partida en curso
-  #ganador = null; // Jugador ganador, o null
+  #turno = null; // Jugador al que le toca
+  #ganador = null; // Jugador ganador
 
   /**
    * @param {Jugador} jugadorHumano
    * @param {Jugador} jugadorAutomata
    * @param {CalcularProbabilidades} calculadora
    * @param {{simulaciones?: number, mostrarMapaHumano?: boolean, primerTurno?: string}} opciones
-   *   - simulaciones: configuraciones por cálculo (valor por defecto provisional; es un
-   *     parámetro experimental que varía en el análisis)
-   *   - mostrarMapaHumano: si es true, también se calcula el mapa del humano.
-   *   - primerTurno: TIPO_JUGADOR.HUMANO o TIPO_JUGADOR.AUTOMATA.
+   *   - simulaciones: configuraciones por cálculo 
+   *   - Tipo de turno: TIPO_JUGADOR.HUMANO o TIPO_JUGADOR.AUTOMATA.
    */
   constructor(
     jugadorHumano,
@@ -92,12 +88,12 @@ export default class CicloDeJuego {
     return this.#estado;
   }
 
-  /** Tipo del jugador al que le toca ("HUMANO" o "AUTOMATA"), o null. */
+  /** Tipo del jugador al que le toca */
   get turno() {
     return this.#turno ? this.#turno.tipo : null;
   }
 
-  /** Tipo del ganador, o null si la partida no ha terminado. */
+  /** Tipo del ganador*/
   get ganador() {
     return this.#ganador ? this.#ganador.tipo : null;
   }
@@ -106,12 +102,25 @@ export default class CicloDeJuego {
     return this.#mostrarMapaHumano;
   }
 
+  /** Cantidad de configuraciones hipotéticas que se generan en cada cálculo. */
+  get simulaciones() {
+    return this.#simulaciones;
+  }
+
+  /** Cambia la cantidad de simulaciones; se aplica desde el siguiente cálculo. */
+  establecerSimulaciones(cantidad) {
+    if (!Number.isInteger(cantidad) || cantidad <= 0) {
+      throw new Error("La cantidad de simulaciones debe ser un entero positivo.");
+    }
+    this.#simulaciones = cantidad;
+  }
+
   // ───────────── Inicio de la partida ─────────────
 
   /**
-   * Arranca la partida. El humano debe haber colocado ya su flota.
-   * El autómata coloca al azar.
-   * También calcula los mapas iniciales (con conocimiento vacío).
+   * El humano debe haber colocado ya su flota
+   * El autómata se coloca al azar
+   * También calcula los mapas iniciales.
    */
   iniciarPartida() {
     if (this.#estado !== ESTADO_PARTIDA.PREPARACION) {
@@ -127,15 +136,10 @@ export default class CicloDeJuego {
     this.#estado = ESTADO_PARTIDA.EN_CURSO;
     this.#turno = this.#primerTurno === TIPO_JUGADOR.HUMANO ? this.#humano : this.#automata;
 
-    // Sin mapa inicial, el autómata no tendría objetivo en su primer turno.
     this.#reestimar(this.#automata);
     if (this.#mostrarMapaHumano) this.#reestimar(this.#humano);
   }
 
-  /**
-   * Activa o desactiva el mapa del humano.
-   * Solo se recalcula en los turnos del humano mientras esté activo.
-   */
   establecerMostrarMapaHumano(mostrar) {
     if (mostrar && !this.#humano.mapaProbabilidades) {
       throw new Error("El jugador humano no tiene un MapaProbabilidades.");
@@ -148,14 +152,14 @@ export default class CicloDeJuego {
 
   // ───────────── Turnos ─────────────
 
-  /** Turno del humano: la interfaz entrega la celda elegida. */
+  /** Turno del humano */
   jugarTurnoHumano(celda) {
     this.#exigirTurno(this.#humano);
     const objetivo = this.#humano.seleccionarObjetivo(celda); // valida y evita repetidos
     return this.ejecutarDisparo(this.#humano, objetivo);
   }
 
-  /** Turno del autómata: elige la celda recomendada por su mapa. */
+  /** El autómata elige la celda recomendada */
   jugarTurnoAutomata() {
     this.#exigirTurno(this.#automata);
     const objetivo = this.#automata.seleccionarObjetivo();
@@ -171,8 +175,11 @@ export default class CicloDeJuego {
   ejecutarDisparo(atacante, celda) {
     this.#exigirTurno(atacante);
     const defensor = atacante === this.#humano ? this.#automata : this.#humano;
+
     const resultado = defensor.tablero.recibirDisparo(celda);
     atacante.registrarResultado(celda, resultado);
+
+    // Victoria si este disparo hundió el ultimo barco
     const finalizada = resultado.hundido && this.verificarFinPartida(defensor);
 
     if (finalizada) {
@@ -180,7 +187,7 @@ export default class CicloDeJuego {
       this.#ganador = atacante;
       this.#turno = null;
     } else {
-      // Reestimación con el conocimiento del atacante y cambio de turno
+      // Reestimación
       if (atacante === this.#automata || this.#mostrarMapaHumano) {
         this.#reestimar(atacante);
       }
@@ -195,6 +202,7 @@ export default class CicloDeJuego {
       ganador: finalizada ? atacante.tipo : null,
     };
   }
+
   verificarFinPartida(defensor) {
     return defensor.tablero.todosLosBarcosHundidos();
   }
@@ -203,8 +211,6 @@ export default class CicloDeJuego {
 
   /**
    * Copia del estado lista para guardar en el estado de React.
-   * Solo contiene datos del humano.
-   * nunca incluye el tablero del autómata ni su mapa de probabilidades.
    */
   obtenerEstadoParaUI() {
     const mapa = this.#mostrarMapaHumano ? this.#humano.mapaProbabilidades : null;
@@ -236,7 +242,7 @@ export default class CicloDeJuego {
     }
   }
 
-  /** Recalcula el mapa del jugador*/
+  /** Recalcula el mapa del jugador */
   #reestimar(jugador) {
     const calculo = this.#calculadora.calcular(jugador.obtenerConocimiento(), this.#simulaciones);
     jugador.solicitarMapaProbabilidades().actualizar(calculo);

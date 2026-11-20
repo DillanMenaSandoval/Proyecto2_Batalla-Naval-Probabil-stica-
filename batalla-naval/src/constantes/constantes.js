@@ -1,7 +1,7 @@
 /**
  * constantes.js
- * Valores compartidos por Jugador, Tablero, CicloDeJuego, Simulador, etc.
- * Se centralizan aquí para no repetirlos ni dejar que se desincronicen.
+ * Valores compartidos por Jugador, Tablero, CicloDeJuego, Simulador.
+ * Se centralizan aquí para no repetirlos.
  */
 
 // ───────────── Tablero ─────────────
@@ -16,7 +16,7 @@ export const ORIENTACION = Object.freeze({
 });
 
 /**
- * Flota de cada jugador (5 embarcaciones).
+ * Flota de cada jugador.
  */
 export const FLOTA = Object.freeze([
   Object.freeze({ id: "PA", nombre: "Portaaviones", tamaño: 5 }),
@@ -43,3 +43,7 @@ export const RESULTADO_CELDA = Object.freeze({
   AGUA: "AGUA",
   IMPACTO: "IMPACTO",
 });
+
+// Cantidad de configuraciones validas.
+export const OPCIONES_SIMULACIONES = Object.freeze([100, 500, 1000, 2000, 3000]);
+export const SIMULACIONES_POR_DEFECTO = 1000;
