@@ -1,5 +1,5 @@
 import { useState } from "react";
-import usePartida from "./hooks/UsePartida.js"; // ajusta las rutas
+import usePartida from "./hooks/UsePartida.js";
 import { ESTADO_PARTIDA } from "./juego/CicloDeJuego.js";
 import PantallaInicio from "./pantallas/PantallaInicio.jsx";
 import PantallaSimulacion from "./pantallas/PantallaSimulacion.jsx";
@@ -8,8 +8,14 @@ import PantallaPartida from "./pantallas/PantallaPartida.jsx";
 import "./styles/Pantalla.css";
 
 export default function App() {
-  const [pantalla, setPantalla] = useState("INICIO"); // "INICIO" | "SIMULACION" | "JUEGO"
+  const [pantalla, setPantalla] = useState("INICIO"); 
   const { vista, ultimoEvento, error, acciones } = usePartida();
+
+  // Volver al menú descarta la partida actual Y empieza de cero
+  const volverAlMenu = () => {
+    acciones.nuevaPartida();
+    setPantalla("INICIO");
+  };
 
   if (pantalla === "INICIO") {
     return (
@@ -29,10 +35,18 @@ export default function App() {
     );
   }
   if (vista.estado === ESTADO_PARTIDA.PREPARACION) {
-    return <PantallaColocacion vista={vista} error={error} acciones={acciones} />;
+    return (
+      <PantallaColocacion vista={vista} error={error} acciones={acciones} onVolverMenu={volverAlMenu} />
+    );
   }
-  // En curso y finalizada comparten pantalla: al terminar se siguen viendo los tableros
+  // Al terminar se siguen viendo los tableros
   return (
-    <PantallaPartida vista={vista} ultimoEvento={ultimoEvento} error={error} acciones={acciones} />
+    <PantallaPartida
+      vista={vista}
+      ultimoEvento={ultimoEvento}
+      error={error}
+      acciones={acciones}
+      onVolverMenu={volverAlMenu}
+    />
   );
 }

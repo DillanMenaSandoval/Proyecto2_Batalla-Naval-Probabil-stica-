@@ -1,4 +1,5 @@
 /* pantallas.css — usa los tokens de tema.css */
+
 .pantalla {
   min-height: 100vh;
   padding: 1.5rem clamp(1rem, 4vw, 3rem);
@@ -306,4 +307,9 @@
   margin: 0;
   padding-left: 0.75rem;
   border-left: 3px solid var(--cian);
+}
+.barra__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }

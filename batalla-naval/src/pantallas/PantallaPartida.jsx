@@ -1,14 +1,20 @@
-import TableroPropio from "../componentes/TableroPropio.jsx"; // ajusta las rutas
+import TableroPropio from "../componentes/TableroPropio.jsx";
 import TableroEnemigo from "../componentes/TableroEnemigo.jsx";
 import PanelSugerencias from "../componentes/PanelSugerencias.jsx";
 import PanelEstadisticas from "../componentes/PanelEstadisticas.jsx";
 import { ESTADO_PARTIDA } from "../juego/CicloDeJuego.js";
 import { TIPO_JUGADOR } from "../constantes/constantes.js";
 
-/** Pantalla de juego */
-export default function PantallaPartida({ vista, ultimoEvento, error, acciones }) {
+/** Pantalla de juego*/
+export default function PantallaPartida({ vista, ultimoEvento, error, acciones, onVolverMenu }) {
   const finalizada = vista.estado === ESTADO_PARTIDA.FINALIZADA;
   const turnoHumano = vista.estado === ESTADO_PARTIDA.EN_CURSO && vista.turno === TIPO_JUGADOR.HUMANO;
+
+  // Reiniciar o salir al menú en plena partida pierde el progreso: se pide confirmación
+  const confirmarYEjecutar = (accion) => {
+    if (!finalizada && !window.confirm("Se perderá el progreso de la partida actual. ¿Continuar?")) return;
+    accion();
+  };
 
   let mensaje;
   if (finalizada) {
@@ -29,11 +35,18 @@ export default function PantallaPartida({ vista, ultimoEvento, error, acciones }
         <p className={`barra__estado${finalizada ? " barra__estado--final" : ""}`} aria-live="polite">
           {mensaje}
         </p>
-        {finalizada && (
-          <button type="button" className="boton" onClick={acciones.nuevaPartida}>
-            Jugar de nuevo
+        <div className="barra__acciones">
+          <button
+            type="button"
+            className={finalizada ? "boton" : "boton boton--secundario"}
+            onClick={() => confirmarYEjecutar(acciones.nuevaPartida)}
+          >
+            {finalizada ? "Jugar de nuevo" : "Reiniciar partida"}
           </button>
-        )}
+          <button type="button" className="boton boton--secundario" onClick={() => confirmarYEjecutar(onVolverMenu)}>
+            Volver al menú
+          </button>
+        </div>
       </header>
 
       {error && (

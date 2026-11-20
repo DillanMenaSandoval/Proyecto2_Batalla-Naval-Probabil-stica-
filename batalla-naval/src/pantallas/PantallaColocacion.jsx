@@ -1,15 +1,13 @@
 import { useMemo, useState } from "react";
-import Cuadricula, { nombreCelda } from "../componentes/Cuadriculas.jsx"; // ajusta las rutas
+import Cuadricula, { nombreCelda } from "../componentes/Cuadriculas.jsx";
 import { FLOTA } from "../constantes/constantes.js";
 
 const clave = (c) => `${c.fila},${c.columna}`;
 
 /**
- * Colocación manual de la flota del humano. 
- * Elige un barco y marca sus celdas en el tablero
- * Se coloca solo al marcar la última celda.
+ * Colocación manual de la flota del humano.
  */
-export default function PantallaColocacion({ vista, error, acciones }) {
+export default function PantallaColocacion({ vista, error, acciones, onVolverMenu }) {
   const [activo, setActivo] = useState(FLOTA[0].id);
   const [seleccionadas, setSeleccionadas] = useState([]);
 
@@ -18,7 +16,6 @@ export default function PantallaColocacion({ vista, error, acciones }) {
 
   const candidatas = useMemo(
     () => (barcoActivo ? acciones.celdasCandidatas(barcoActivo.tamaño, seleccionadas) : []),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [barcoActivo?.id, seleccionadas, colocados.join()]
   );
   const esCandidata = new Set(candidatas.map(clave));
@@ -55,7 +52,12 @@ export default function PantallaColocacion({ vista, error, acciones }) {
 
   return (
     <main className="pantalla">
-      <h1 className="barra__titulo">Coloca tu flota</h1>
+      <header className="barra">
+        <h1 className="barra__titulo">Coloca tu flota</h1>
+        <button type="button" className="boton boton--secundario" onClick={onVolverMenu}>
+          Volver al menú
+        </button>
+      </header>
       <div className="colocacion">
         <section className="tablero">
           <h2 className="tablero__titulo">Tu tablero</h2>

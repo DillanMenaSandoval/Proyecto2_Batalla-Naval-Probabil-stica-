@@ -1,4 +1,4 @@
-/* tema.css — importar una sola vez (por ejemplo en main.jsx) */
+/* tema.css — importar una sola vez  */
 @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&display=swap");
 
 :root {
