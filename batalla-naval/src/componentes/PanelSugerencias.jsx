@@ -1,6 +1,6 @@
 import { nombreCelda } from "./Cuadriculas.jsx";
 import { FLOTA, TIPO_JUGADOR } from "../constantes/constantes.js"; 
-import { porcentaje } from "../utils/formatos.js";
+import { porcentaje } from "../utils/Formatos.js";
 
 const nombreBarco = (id) => FLOTA.find((b) => b.id === id)?.nombre.toLowerCase() ?? "barco";
 
